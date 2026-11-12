@@ -1,16 +1,31 @@
-# React + Vite
+# Central de Chamados
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplicação web para abrir e acompanhar chamados de suporte de alunos, com as operações de CRUD executadas no back-end em um banco de dados relacional.
 
-Currently, two official plugins are available:
+- **Aplicação:** https://chamados-suporte-tau.vercel.app
+- **Autora:** Beatriz Mioranza
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Tecnologias
 
-## React Compiler
+- **Front-end:** React + Vite
+- **Back-end:** Node.js (função do Vercel em `api/chamados.js`)
+- **Banco de dados:** PostgreSQL (Supabase), acessado com a biblioteca `pg`
+- **Hospedagem:** Vercel, com deploy automático a cada push
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## API (CRUD)
 
-## Expanding the Oxlint configuration
+| Ação | Rota | SQL |
+|---|---|---|
+| Listar e filtrar | `GET /api/chamados?categoria=&prioridade=&status=` | `SELECT ... WHERE ... ORDER BY criado_em DESC` |
+| Criar | `POST /api/chamados` | `INSERT INTO chamados ... RETURNING *` |
+| Atualizar | `PUT /api/chamados?id=1` | `UPDATE chamados SET ... WHERE id = $n` |
+| Excluir | `DELETE /api/chamados?id=1` | `DELETE FROM chamados WHERE id = $1` |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+As consultas usam parâmetros (`$1`, `$2`, ...) para evitar SQL injection. Chamados novos são criados com status Aberto, e dados inválidos retornam erro 400 com uma mensagem explicativa.
+
+## Como rodar localmente
+
+1. `npm install`
+2. Crie um arquivo `.env` na raiz com `DATABASE_URL=` e a conexão do banco (Transaction pooler do Supabase).
+3. Em um terminal, rode `npm run dev:api` (API na porta 3001).
+4. Em outro terminal, rode `npm run dev` e acesse http://localhost:5173.
