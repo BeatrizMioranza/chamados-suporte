@@ -201,9 +201,56 @@ button:disabled {
 }
 
 .btn-atualizar {
-  margin-bottom: 16px;
-  padding: 7px 14px;
+  padding: 9px 14px;
   font-size: 0.9rem;
+}
+
+/* barra de filtros acima da lista */
+.filtros {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 14px;
+  margin-bottom: 16px;
+  background: #f8fafc;
+  border: 1px solid var(--borda);
+  border-radius: 12px;
+}
+
+.filtros-botoes {
+  display: flex;
+  gap: 8px;
+}
+
+.filtros-botoes button {
+  white-space: nowrap;
+}
+
+/* botão só com o ícone ↻ */
+.btn-icone {
+  font-size: 1.15rem;
+  line-height: 1;
+  padding: 8px 12px;
+}
+
+.btn-icone:hover {
+  color: var(--primaria);
+}
+
+.filtros select {
+  width: 100%;
+  min-width: 0;
+}
+
+@media (max-width: 860px) {
+  .filtros {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .filtros-botoes {
+    grid-column: 1 / -1;
+  }
 }
 
 .vazio {

@@ -32,10 +32,24 @@ function App() {
       .replace(/\s+/g, '-');
   }
 
-  // GET - Buscar chamados
+  // filtros da lista (vazio = todos)
+  const filtrosIniciais = { categoria: '', prioridade: '', status: '' };
+  const [filtros, setFiltros] = useState(filtrosIniciais);
+
+  function handleFiltro(e) {
+    setFiltros({ ...filtros, [e.target.name]: e.target.value });
+  }
+
+  // GET - Buscar chamados (envia só os filtros preenchidos, ex.: ?categoria=Notas&status=Aberto)
   async function carregarChamados() {
     try {
-      const resposta = await fetch(API_URL);
+      const parametros = new URLSearchParams();
+      for (const [campo, valor] of Object.entries(filtros)) {
+        if (valor) parametros.append(campo, valor);
+      }
+      const consulta = parametros.toString();
+
+      const resposta = await fetch(consulta ? `${API_URL}?${consulta}` : API_URL);
 
       if (!resposta.ok) {
         throw new Error('Erro ao buscar chamados');
@@ -50,9 +64,10 @@ function App() {
     }
   }
 
+  // carrega a lista ao abrir a página e toda vez que um filtro muda
   useEffect(() => {
     carregarChamados();
-  }, []);
+  }, [filtros]);
 
   // Atualizar os campos do formulário
   function handleChange(e) {
@@ -342,16 +357,65 @@ function App() {
           <span>{chamados.length} chamados</span>
         </div>
 
-        <button
-          className="btn-atualizar"
-          onClick={carregarChamados}
-        >
-          Atualizar lista
-        </button>
+        {/* FILTROS */}
+        <div className="filtros">
+          <div className="campo">
+            <label>Categoria</label>
+            <select name="categoria" value={filtros.categoria} onChange={handleFiltro}>
+              <option value="">Todas</option>
+              <option value="Acesso">Acesso</option>
+              <option value="Notas">Notas</option>
+              <option value="Prazos">Prazos</option>
+              <option value="Conteúdo">Conteúdo</option>
+              <option value="Outros">Outros</option>
+            </select>
+          </div>
+
+          <div className="campo">
+            <label>Prioridade</label>
+            <select name="prioridade" value={filtros.prioridade} onChange={handleFiltro}>
+              <option value="">Todas</option>
+              <option value="Baixa">Baixa</option>
+              <option value="Média">Média</option>
+              <option value="Alta">Alta</option>
+            </select>
+          </div>
+
+          <div className="campo">
+            <label>Status</label>
+            <select name="status" value={filtros.status} onChange={handleFiltro}>
+              <option value="">Todos</option>
+              <option value="Aberto">Aberto</option>
+              <option value="Em andamento">Em andamento</option>
+              <option value="Resolvido">Resolvido</option>
+            </select>
+          </div>
+
+          <div className="filtros-botoes">
+            <button
+              type="button"
+              className="btn-atualizar"
+              onClick={() => setFiltros(filtrosIniciais)}
+            >
+              Limpar filtros
+            </button>
+            <button
+              type="button"
+              className="btn-atualizar btn-icone"
+              onClick={carregarChamados}
+              title="Recarregar lista"
+              aria-label="Recarregar lista"
+            >
+              ↻
+            </button>
+          </div>
+        </div>
 
         {chamados.length === 0 ? (
           <p className="vazio">
-            Nenhum chamado cadastrado.
+            {filtros.categoria || filtros.prioridade || filtros.status
+              ? 'Nenhum chamado encontrado com esses filtros.'
+              : 'Nenhum chamado cadastrado.'}
           </p>
         ) : (
 

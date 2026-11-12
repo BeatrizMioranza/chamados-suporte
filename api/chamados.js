@@ -8,10 +8,27 @@ const pool = new pg.Pool({
 
 export default async function handler(req, res) {
   try {
-    // GET 
+    // GET - lista os chamados, com filtros opcionais
+    // exemplo: /api/chamados?categoria=Notas&prioridade=Alta&status=Aberto
     if (req.method === 'GET') {
+      const condicoes = [];
+      const valores = [];
+
+      // só aceita filtrar por estas colunas (o nome da coluna nunca vem do usuário)
+      for (const campo of ['categoria', 'prioridade', 'status']) {
+        if (req.query[campo]) {
+          valores.push(req.query[campo]);
+          condicoes.push(`${campo} = $${valores.length}`);
+        }
+      }
+
+      const where = condicoes.length > 0
+        ? `WHERE ${condicoes.join(' AND ')}`
+        : '';
+
       const { rows } = await pool.query(
-        'SELECT * FROM chamados ORDER BY criado_em DESC'
+        `SELECT * FROM chamados ${where} ORDER BY criado_em DESC`,
+        valores
       );
 
       return res.status(200).json(rows);
