@@ -29,3 +29,13 @@ As consultas usam parâmetros (`$1`, `$2`, ...) para evitar SQL injection. Chama
 2. Crie um arquivo `.env` na raiz com `DATABASE_URL=` e a conexão do banco (Transaction pooler do Supabase).
 3. Em um terminal, rode `npm run dev:api` (API na porta 3001).
 4. Em outro terminal, rode `npm run dev` e acesse http://localhost:5173.
+
+## Declaração de uso de Inteligência Artificial
+
+Utilizei o assistente **Claude (Anthropic)** como apoio neste trabalho:
+
+- **Esclarecimento de dúvidas pontuais** durante o desenvolvimento e **suporte técnico na configuração do ambiente**: ajuste da conexão com o banco e criação de um servidor de teste local, devido a uma limitação do Windows para executar o `vercel dev`.
+- **Geração de partes do código:** estilos da interface (CSS), filtros por categoria, prioridade e status (consulta com WHERE), tratamento de erros de validação na API, ajustes no formulário e o arquivo README.
+- **Testes:** conferência das operações de CRUD na versão local e na publicada.
+
+Todo o código sugerido foi lido, testado e revisado por mim antes de ser incorporado ao projeto, e assumo integral responsabilidade pelo conteúdo entregue.
